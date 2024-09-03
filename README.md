@@ -3,9 +3,27 @@
 This module contains predicates for list manipulation in Prolog.
 It is inspired by Python's [itertools](https://docs.python.org/3/library/itertools.html) and [more-itertools](https://more-itertools.readthedocs.io/en/stable/toctree.html) modules.
 
+## Installation and Usage
+The library was tested on SWI prolog.
+However, it should be easy to make it work also on other Prolog systems, since few built-in predicates were used.
+
+In SWI, you can install it with:
+```
+?- pack_install('https://github.com/damianoazzolini/ltools').
+```
+
+Then
+```
+?- use_module(library(ltools)).
+true.
+```
+and you are ready to go.
+
 ## Available Predicates
 The source code is documented and should contain the explanation of each predicate, together with examples.
-These are:
+Furthermore, also tests can guide you with several examples.
+
+Available predicates:
 - `count/2`
 - `count/3`
 - `cycle/2`
@@ -255,3 +273,9 @@ Res = [1, 2, 3, 4]
 ```
 Repeats each element in the list `List` `Times` times and unifies
 the result with `Res`.
+
+## How to contribute
+Pull requests or issues, also to request further predicates - anything is welcome.
+
+## DISCLAIMER
+This software is provided as it is. It may contain bugs.
