@@ -12,7 +12,7 @@
     % more itertools
     chunked/3,
     divide/3,
-    split_at/4,
+    split_at_index/4,
     window/3,
     window/4,
     triplewise/2,
@@ -130,7 +130,7 @@ accumulate(plus, L, V):-
 
 /**
  * batched(+L:list, +N:int, -V:list) 
- * Creates batches of size N from the list L, returns all on backtracking.
+ * Creates batches of size N from the list L, computes all on backtracking.
  * The last one may of length less than N.
  * batched([1,2,4,5,6], 3, V), V = [1,2,4] ; V = [5,6]
  * 
@@ -326,27 +326,26 @@ chunked(List, Size, Chunk):-
 divide(List, Parts, Divided):-
     must_be(nonneg, Parts),
     length(List,N),
-    ( (Parts =:= 0 ; Parts > N) ->  
-        false ;
-        Chunk is ceil(N/Parts),
-        chunked_(List, Chunk, Divided)
-    ).
+    Parts > 0, 
+    Parts =< N,
+    Chunk is ceil(N/Parts),
+    chunked_(List, Chunk, Divided).
 
 /**
- * split_at(+List:list, +Pos:int, -L0:list, -L1:List)
+ * split_at_index(+List:list, +Pos:int, -L0:list, -L1:List)
  * Splits the list List at position Pos, starting from 0, and unifies L0 and L1
  * with the resulting lists. The index Pos will be in L1.
  * Fails if Pos is greater that the length of the list
- * split_at([1, 2, 3, 4, 5, 6], 2, L0,L1).
+ * split_at_index([1, 2, 3, 4, 5, 6], 2, L0,L1).
  * L0 = [1, 2],
  * L1 = [3, 4, 5, 6]
- * split_at([1, 2, 3, 4, 5, 6], 0, L0,L1).
+ * split_at_index([1, 2, 3, 4, 5, 6], 0, L0,L1).
  * L0 = [],
  * L1 = [1, 2, 3, 4, 5, 6]
- * split_at([1, 2, 3, 4, 5, 6], 7, L0,L1).
+ * split_at_index([1, 2, 3, 4, 5, 6], 7, L0,L1).
  * false
 */
-split_at(List,Index,L0,L1):-
+split_at_index(List,Index,L0,L1):-
     must_be(nonneg, Index),
     length(L0, Index),
     append(L0,L1,List).

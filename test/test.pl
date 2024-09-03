@@ -20,7 +20,7 @@ test_list([
     % more itertools
     chunked,
     divide,
-    split_at,
+    split_at_index,
     window,
     triplewise,
     intersperse,
@@ -121,11 +121,11 @@ test(divide_1):- findall(S,divide([1, 2, 3, 4, 5, 6], 2, S),LS), LS = [[1,2,3],[
 test(divide_2):- findall(S,divide([1, 2, 3, 4, 5, 6, 7], 3, S),LS), LS = [[1,2,3],[4,5,6],[7]].
 :- end_tests(divide).
 
-:- begin_tests(split_at, []).
-test(split_at_1):- split_at([1, 2, 3, 4, 5, 6], 2, [1, 2], [3, 4, 5, 6]).
-test(split_at_2):- split_at([1, 2, 3, 4, 5, 6], 0, [], [1, 2, 3, 4, 5, 6]).
-test(split_at_3, [fail]):- split_at([1, 2, 3, 4, 5, 6], 7, _, _).
-:- end_tests(split_at).
+:- begin_tests(split_at_index, []).
+test(split_at_index_1):- split_at_index([1, 2, 3, 4, 5, 6], 2, [1, 2], [3, 4, 5, 6]).
+test(split_at_index_2):- split_at_index([1, 2, 3, 4, 5, 6], 0, [], [1, 2, 3, 4, 5, 6]).
+test(split_at_index_3, [fail]):- split_at_index([1, 2, 3, 4, 5, 6], 7, _, _).
+:- end_tests(split_at_index).
 
 :- begin_tests(window, []).
 test(window_1):- findall(Res, window([1, 2, 3], 2, 1, Res), LR), LR = [[1,2],[2,3]].
