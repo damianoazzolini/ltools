@@ -74,14 +74,14 @@ Cycles through the elements `El` of the list `List`.
 
 
 ```
-repeat(El,El)
+repeat(?El,?El)
 ?- repeat(1,El), El = 1 ; El = 1 ; ...
 ```
 Repeats `El` indefinitely.
 
 
 ```
-repeat(El,N,El)
+repeat(?El,+N:int,?El)
 ?- repeat(1,2,El), El = 1 ; El = 1
 ```
 Repeats `El` up to N times. 
@@ -105,7 +105,7 @@ The last one may of length less than `N`.
 
 
 ```
-slice(+L:list, +Start:int, +End:int, -S:list) 
+slice(+L:list, +End:int, -S:list) 
 ?- slice([1,2,4,5,6], 2, S), S = [1, 2].
 ```
 Unifies `S` with the sub list extracted from `L` between `0` and the `End`
@@ -273,6 +273,12 @@ Res = [1, 2, 3, 4]
 ```
 Repeats each element in the list `List` `Times` times and unifies
 the result with `Res`.
+
+```
+distribute(+L:list, +N:int, -S:list)
+distribute([1,2,4,5,6], 2, LV),  LV = [[1,2,4], [5,6]].
+```
+Distributes the elements of L into N sub-lists.
 
 ## How to contribute
 Pull requests or issues, also to request further predicates - anything is welcome.

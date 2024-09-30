@@ -41,17 +41,20 @@ test(count_3, [nondet]):- findnsols(10, V, count(-2,V), [-2, -1, 0, 1, 2, 3, 4, 
 test(count_4, [nondet]):- findnsols(10, V, count(1, 2, V), [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]).
 test(count_5, [nondet]):- findnsols(10, V, count(5, 3, V), [5, 8, 11, 14, 17, 20, 23, 26, 29, 32]).
 test(count_6, [nondet]):- findnsols(10, V, count(-2, -2, V), [-2, -4, -6, -8, -10, -12, -14, -16, -18, -20]).
+test(count_7):- catch(count(1, 3), error(_,_), true).
 :- end_tests(count).
 
 :- begin_tests(cycle, []).
 test(cycle_1, [nondet]):- findnsols(10, V, cycle([1,2], V), [1, 2, 1, 2, 1, 2, 1, 2, 1, 2]).
-test(cycle_2):- cycle([], _).
+test(cycle_2):- cycle([], L), L = [].
 :- end_tests(cycle).
 
 :- begin_tests(repeat, []).
 test(repeat_1, [nondet]):- findnsols(3, V, repeat(1, V), [1, 1, 1]).
 test(repeat_2, [nondet]):- findnsols(4, V, repeat(1, 3, V), [1, 1, 1]).
-test(repeat_3):- catch(repeat(1, -3, _), error(type_error(positive_integer,-3),_), true).
+test(repeat_3, [nondet]):- findnsols(4, V, repeat(V, 3, 1), [1, 1, 1]).
+test(repeat_4, [nondet]):- repeat(1, 1).
+test(repeat_5):- catch(repeat(1, -3, _), error(type_error(positive_integer,-3),_), true).
 :- end_tests(repeat).
 
 :- begin_tests(accumulate, []).
@@ -64,6 +67,7 @@ test(accumulate_3):- catch(accumulate(times, [1,_,4], _), error(_,_), true).
 test(batched_1):- findall(V,batched([1,2,4,5,6], 3, V),LV),  LV = [[1,2,4], [5,6]].
 test(batched_2):- catch(batched(_, -3, _), error(_,_), true).
 test(batched_3):- catch(batched(1, _, _), error(_,_), true).
+test(batched_4, [nondet]):- batched([1,2,4,5,6], 3, [1,2,4]).
 :- end_tests(batched).
 
 :- begin_tests(slice, []).
@@ -76,6 +80,7 @@ test(slice_4):- catch(slice(_, -3, _, _), error(_,_), true).
 :- begin_tests(pairwise, []).
 test(pairwise_1):- findall(S,pairwise([1,2,3], S),LS), LS = [[1,2],[2,3]].
 test(pairwise_2, fail):- pairwise([1], _).
+test(pairwise_3):- catch(pairwise(1, -3), error(_,_), true).
 :- end_tests(pairwise).
 
 
@@ -156,5 +161,10 @@ test(padded_left_2):- padded_left([1, 2, 3, 4], a, 7, Res), Res = [a, a, a, 1, 2
 test(repeat_each_1):- repeat_each([1, 2, 3, 4], 3, Res), Res = [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4].
 test(repeat_each_2):- repeat_each([1, 2, 3, 4], 1, Res), Res = [1, 2, 3, 4].
 :- end_tests(repeat_each).
+
+:- begin_tests(distribute, []).
+% no need to test since it calls batched/3.
+test(distribute_0):- true.
+:- end_tests(distribute).
 
 

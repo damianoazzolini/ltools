@@ -51,9 +51,8 @@ count_check_args(Start,Step,N):-
     must_be(var, N),
     count_(Start,Step,N).
 
-
 count(Start,N):-
-    count_(Start,1,N).
+    count_check_args(Start,1,N).
 /**
  * count(+Start:int, +Step:int, -N:int)
  * Unifies N with a number starting from Start and up to infinity with step Step.
@@ -66,7 +65,7 @@ count(Start, Step, N):-
  * cycle(+List, -El)
  * Cycles through the elements El of the list.
  * cycle([1,2], El), El = 1 ; El = 2 ; El = 1 ; El = 2 ; ... 
- * cycle([], _) 
+ * cycle([], []) 
 */
 cycle_([H|_],_,H).
 cycle_([_|T],L,H):-
@@ -76,14 +75,13 @@ cycle_([],L,H):-
 
 cycle_check_args(L,C):-
     must_be(list,L),
-    must_be(var,C),
-    ( L = [] -> C = _ ; cycle_(L,L,C)).
+    ( L = [] -> C = [] ; cycle_(L,L,C)).
 
 cycle(L,C):-
     cycle_check_args(L,C).
 
 /**
- * repeat(El,El)
+ * repeat(?El,?El)
  * repeats El indefinitely 
  * repeat(1,El), El = 1 ; El = 1 ; ...
 */
@@ -91,26 +89,24 @@ repeat_(V,V).
 repeat_(V,V):-
     repeat_(V,V).
 
-repeat(N,V):-
-    must_be(var, V),
-    repeat_(N,V).
+repeat(V,V).
+repeat(V,V):-
+    repeat(V,V).
 
 
 /**
- * repeat(El,N,El)
+ * repeat(?El,+N:int,?El)
  * repeats El up to N times 
  * repeat(1,2,El), El = 1 ; El = 1
 */
-repeat_(V, 1, V):-  !.
 repeat_(V, T, V):-  T > 0.
 repeat_(V, T, V):- 
-    T > 0,
+    T > 1,
     T1 is T - 1,
     repeat_(V, T1, V).
 
 repeat(N,Times,V):-
     must_be(positive_integer, Times),
-    must_be(var, V),
     repeat_(N,Times,V).
 
 /**
@@ -154,7 +150,7 @@ batched(L, V, Batch):-
     batched_check_args(L, V, Batch).
 
 /**
- * slice(+L:list, +Start:int, +End:int, -S:list) 
+ * slice(+L:list, +End:int, -S:list) 
  * Unifies St with the sub list extracted from L between 0 and the End
  * index.
  * slice([1,2,4,5,6], 2, S), S = [1, 2].
@@ -468,9 +464,27 @@ padded(List,Element,TargetLen,Type,Result):-
 */
 repeat_each_([],_,L,L).
 repeat_each_([H|T], Times, LT, Res):-
-    findnsols(Times, I, repeat(H,Times,I), LR),
+    findnsols(Times, I, repeat(H,Times,I), LR), !,
     append(LT, LR, LT1),
     repeat_each_(T, Times, LT1, Res).
 repeat_each(L, Times, Res):-
     must_be(positive_integer, Times),
     repeat_each_(L, Times, [], Res).
+
+/**
+ * distribute(+L:list, +N:int, -S:list)
+ * Distributes the elements of L into N sub-lists.
+ * distribute([1,2,4,5,6], 2, LV),  LV = [[1,2,4], [5,6]].
+*/
+distribute(L, N, S):-
+    findall(V,batched(L, N, V),S).
+
+/**
+ * repeat_last(+List, -El) 
+ * Unifies El with each element of the list.
+ * When the list is empty, it keeps repeating the last element.
+*/
+repeat_last([H],H).
+repeat_last([H|_],H).
+repeat_last([_|T],H):-
+    repeat_last(T,H).
